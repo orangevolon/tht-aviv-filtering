@@ -15,23 +15,26 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
   children,
 }) => {
   return (
-    <section role="dialog" className={getModalClassName(isVisible)}>
-      <header className="Modal-header">
-        <span className="Modal-title">{title}</span>
-        <button className="Modal-close" onClick={onDismiss}>
-          {CLOSE_ICON_CHARACTER}
-        </button>
-      </header>
-      <main className="Modal-main">{children}</main>
-    </section>
+    <div className={getModalClassName(isVisible)}>
+      <div className="Modal_Backdrop-div" onClick={onDismiss} />
+      <section role="dialog" className="Modal-section">
+        <header className="Modal-header">
+          <span className="Modal-title">{title}</span>
+          <button className="Modal-close" onClick={onDismiss}>
+            {CLOSE_ICON_CHARACTER}
+          </button>
+        </header>
+        <main className="Modal-main">{children}</main>
+      </section>
+    </div>
   );
 };
 
 const getModalClassName = (isVisible: boolean) => {
-  const baseClass = "Modal-section";
+  const baseClass = "Modal_Container-div";
 
   if (isVisible) {
-    return `${baseClass} Modal-section--visible`;
+    return `${baseClass} Modal_Container-div--visible`;
   }
 
   return baseClass;

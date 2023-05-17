@@ -14,6 +14,12 @@
   flex-direction: column;
 }
 
+@media (min-width: 768px) {
+  .App {
+    font-size: 14px;
+  }
+}
+
 .App-header {
   padding: 1em;
   display: flex;
@@ -30,24 +36,53 @@
   justify-content: center;
 }
 
-.Modal-section {
+.Modal_Container-div {
+  position: fixed;
   display: flex;
-  color: #333;
-  width: 100vw;
-  height: 100vh;
   top: 0;
   left: 0;
-  position: fixed;
-  background-color: white;
-  flex-direction: column;
-  transition: all 300ms ease-in-out;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  transition-property: opacity, visibility, z-index;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
   opacity: 0;
   visibility: hidden;
+  z-index: -1;
 }
 
-.Modal-section--visible {
+.Modal_Container-div--visible {
   opacity: 1;
   visibility: visible;
+  z-index: 1;
+}
+
+.Modal_Backdrop-div {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.Modal-section {
+  position: relative;
+  display: flex;
+  color: #333;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  flex-direction: column;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .Modal-section {
+    width: 640px;
+    height: 480px;
+    border-radius: 0.5em;
+  }
 }
 
 .Modal-header {
