@@ -75,6 +75,7 @@
   background-color: white;
   flex-direction: column;
   z-index: 1;
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {
@@ -97,6 +98,7 @@
 
 .Modal-main {
   padding: 1em;
+  overflow-y: auto;
 }
 
 .Modal-close {
