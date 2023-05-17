@@ -113,3 +113,17 @@
   opacity: 1;
   color: black;
 }
+
+.Filters_Modal-form {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-gap: 1em;
+}
+
+.Filters_Modal_Buttons {
+  display: flex;
+  gap: 0.5em;
+  grid-column: 1 / 3;
+  justify-content: flex-end;
+}
