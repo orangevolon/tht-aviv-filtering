@@ -26,7 +26,9 @@ export const FiltersSummary: FC<FiltersSummaryProps> = ({ filters }) => {
       <h2>Filters:</h2>
       <ul>
         {fields.map((field) => (
-          <li key={field}>{field}</li>
+          <li aria-label="filter" key={field}>
+            {field}
+          </li>
         ))}
       </ul>
     </section>
