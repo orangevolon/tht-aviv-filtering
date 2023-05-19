@@ -3,6 +3,7 @@ import { Modal } from "./Modal";
 import { Color, Filters, Size } from "../types";
 import { useFilters } from "../contexts/FiltersProvider";
 import { ComboBox } from "./ComboBox";
+import { TextBox } from "./TextBox";
 
 export interface FiltersModalProps {
   isVisible: boolean;
@@ -61,24 +62,19 @@ export const FiltersModal: FC<FiltersModalProps> = ({
         />
 
         <label htmlFor="min-price">Min Price</label>
-        <input
+        <TextBox
           id="min-price"
-          value={fields.minPrice ?? ""}
           type="number"
-          onChange={({ target }) => setField("minPrice", Number(target.value))}
+          value={fields.minPrice}
+          onChange={(value) => setField("minPrice", value)}
         />
 
         <label htmlFor="max-price">Max Price</label>
-        <input
+        <TextBox
           id="max-price"
-          value={fields.maxPrice ?? ""}
           type="number"
-          onChange={({ target }) =>
-            setField(
-              "maxPrice",
-              target.value !== "" ? Number(target.value) : undefined
-            )
-          }
+          value={fields.maxPrice}
+          onChange={(value) => setField("maxPrice", value)}
         />
 
         <label htmlFor="color">Color</label>
