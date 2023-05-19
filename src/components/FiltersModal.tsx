@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { Modal } from "./Modal";
 import { Color, Filters, Size } from "../types";
 import { useFilters } from "../contexts/FiltersProvider";
+import { ComboBox } from "./ComboBox";
 
 export interface FiltersModalProps {
   isVisible: boolean;
@@ -48,18 +49,16 @@ export const FiltersModal: FC<FiltersModalProps> = ({
         aria-label="filters"
       >
         <label htmlFor="size">Size</label>
-        <select
+        <ComboBox
           id="size"
-          onChange={({ target }) => setField("size", target.value as Size)}
-          value={fields.size ?? ""}
-        >
-          <option value="" disabled>
-            No preference
-          </option>
-          <option value="small">Small</option>
-          <option value="medium">Medium</option>
-          <option value="large">Large</option>
-        </select>
+          value={fields.size}
+          onChange={(value) => setField("size", value)}
+          options={{
+            small: "Small",
+            medium: "Medium",
+            large: "Large",
+          }}
+        />
 
         <label htmlFor="min-price">Min Price</label>
         <input
@@ -74,22 +73,25 @@ export const FiltersModal: FC<FiltersModalProps> = ({
           id="max-price"
           value={fields.maxPrice ?? ""}
           type="number"
-          onChange={({ target }) => setField("maxPrice", Number(target.value))}
+          onChange={({ target }) =>
+            setField(
+              "maxPrice",
+              target.value !== "" ? Number(target.value) : undefined
+            )
+          }
         />
 
         <label htmlFor="color">Color</label>
-        <select
+        <ComboBox
           id="color"
-          onChange={({ target }) => setField("color", target.value as Color)}
-          value={fields.color ?? ""}
-        >
-          <option value="" disabled>
-            No preference
-          </option>
-          <option value="red">Red</option>
-          <option value="blue">Blue</option>
-          <option value="green">Green</option>
-        </select>
+          value={fields.color}
+          onChange={(value) => setField("color", value)}
+          options={{
+            red: "red",
+            blue: "blue",
+            green: "green",
+          }}
+        />
 
         <div className="Filters_Modal_Buttons">
           <button type="submit">Apply</button>

@@ -1,6 +1,6 @@
 export type Size = "small" | "medium" | "large";
 
-export type Color = "red" | "blue" | "green" | "yellow" | "black" | "white";
+export type Color = "red" | "blue" | "green";
 
 export interface Filters {
   size?: Size;
