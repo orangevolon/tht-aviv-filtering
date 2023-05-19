@@ -42,7 +42,11 @@ export const FiltersModal: FC<FiltersModalProps> = ({
 
   return (
     <Modal title="Filters" isVisible={isVisible} onDismiss={onDismiss}>
-      <form className="Filters_Modal-form" onSubmit={handleSubmit}>
+      <form
+        className="Filters_Modal-form"
+        onSubmit={handleSubmit}
+        aria-label="filters"
+      >
         <label htmlFor="name">Size</label>
         <select
           id="name"
