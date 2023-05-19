@@ -3,7 +3,7 @@ import { FC, PropsWithChildren } from "react";
 export interface ModalProps {
   isVisible: boolean;
   onDismiss: () => void;
-  title?: string;
+  title: string;
 }
 
 const CLOSE_ICON_CHARACTER = "╳";
@@ -15,12 +15,16 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
   children,
 }) => {
   return (
-    <div className={getModalClassName(isVisible)}>
+    <div className={getModalClassName(isVisible)} role="dialog">
       <div className="Modal_Backdrop-div" onClick={onDismiss} />
-      <section role="dialog" className="Modal-section">
+      <section className="Modal-section">
         <header className="Modal-header">
           <span className="Modal-title">{title}</span>
-          <button className="Modal-close" onClick={onDismiss}>
+          <button
+            className="Modal-close"
+            onClick={onDismiss}
+            aria-label="close"
+          >
             {CLOSE_ICON_CHARACTER}
           </button>
         </header>
