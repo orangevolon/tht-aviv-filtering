@@ -1,4 +1,4 @@
-export interface Filters {
+export interface Filters extends Record<string, string> {
   size: string;
   minPrice: string;
   maxPrice: string;

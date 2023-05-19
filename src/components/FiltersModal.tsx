@@ -28,6 +28,16 @@ export const FiltersModal: FC<FiltersModalProps> = ({
     if (color) filters.color = color;
 
     onApply(filters);
+    onDismiss();
+  };
+
+  const handleClear = () => {
+    setSize("");
+    setMinPrice("");
+    setMaxPrice("");
+    setColor("");
+    onApply({});
+    onDismiss();
   };
 
   return (
@@ -77,6 +87,9 @@ export const FiltersModal: FC<FiltersModalProps> = ({
 
         <div className="Filters_Modal_Buttons">
           <button type="submit">Apply</button>
+          <button type="button" onClick={handleClear}>
+            Clear All
+          </button>
           <button type="button" onClick={onDismiss}>
             Cancel
           </button>
