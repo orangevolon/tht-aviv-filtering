@@ -1,10 +1,15 @@
 import { render, screen } from "@testing-library/react";
 import { FiltersSummary } from "./FiltersSummary";
+import {
+  FILTERS_CONTEXT_DEFAULT_VALUE,
+  FiltersContext,
+} from "../contexts/FiltersProvider";
+import { Filters } from "../types";
 
 describe(`${FiltersSummary.name}`, () => {
   describe("when no filters are selected", () => {
     it('should render "No filters selected!"', () => {
-      render(<FiltersSummary filters={{}} />);
+      render(<FiltersSummary />);
 
       expect(screen.getByText("No filters selected!")).toBeInTheDocument();
     });
@@ -12,24 +17,36 @@ describe(`${FiltersSummary.name}`, () => {
 
   describe("when filters are selected", () => {
     it("should render the title", () => {
-      const filters = {
+      const filters: Filters = {
         size: "small",
       };
 
-      render(<FiltersSummary filters={filters} />);
+      render(
+        <FiltersContext.Provider
+          value={{ ...FILTERS_CONTEXT_DEFAULT_VALUE, filters }}
+        >
+          <FiltersSummary />
+        </FiltersContext.Provider>
+      );
 
       expect(screen.getByText("Filters:")).toBeInTheDocument();
     });
 
     it("should render the filters", () => {
-      const filters = {
+      const filters: Filters = {
         size: "small",
         color: "red",
-        minPrice: "0",
-        maxPrice: "100",
+        minPrice: 0,
+        maxPrice: 100,
       };
 
-      render(<FiltersSummary filters={filters} />);
+      render(
+        <FiltersContext.Provider
+          value={{ ...FILTERS_CONTEXT_DEFAULT_VALUE, filters }}
+        >
+          <FiltersSummary />
+        </FiltersContext.Provider>
+      );
 
       expect(screen.getByText("Size: small")).toBeInTheDocument();
       expect(screen.getByText("Color: red")).toBeInTheDocument();
@@ -40,19 +57,28 @@ describe(`${FiltersSummary.name}`, () => {
 
   describe("when some filters have empty values", () => {
     it("should only render filters with values", () => {
-      const filters = {
-        // Intentionally falsy
-        minPrice: "",
-        // Selected filters
+      const filters: Filters = {
+        // Should not render these
+        maxPrice: undefined,
+
+        // Should render these
+        minPrice: 0,
         size: "small",
         color: "red",
       };
 
-      render(<FiltersSummary filters={filters} />);
+      render(
+        <FiltersContext.Provider
+          value={{ ...FILTERS_CONTEXT_DEFAULT_VALUE, filters }}
+        >
+          <FiltersSummary />
+        </FiltersContext.Provider>
+      );
 
       expect(screen.getByText("Size: small")).toBeInTheDocument();
       expect(screen.getByText("Color: red")).toBeInTheDocument();
-      expect(screen.queryByText("Min Price:")).not.toBeInTheDocument();
+      expect(screen.getByText("Min Price: 0")).toBeInTheDocument();
+      expect(screen.queryByText("Max Price:")).not.toBeInTheDocument();
     });
   });
 });

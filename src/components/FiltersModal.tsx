@@ -1,42 +1,42 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Modal } from "./Modal";
-import { Filters } from "../types";
+import { Color, Filters, Size } from "../types";
+import { useFilters } from "../contexts/FiltersProvider";
 
 export interface FiltersModalProps {
   isVisible: boolean;
   onDismiss: () => void;
-  onApply: (filters: Partial<Filters>) => void;
 }
 
 export const FiltersModal: FC<FiltersModalProps> = ({
   isVisible,
   onDismiss,
-  onApply,
 }) => {
-  const [size, setSize] = useState("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [color, setColor] = useState("");
+  const { filters, applyFilters, clearFilters } = useFilters();
+
+  const [fields, setFields] = useState<Filters>({
+    size: undefined,
+    minPrice: undefined,
+    maxPrice: undefined,
+    color: undefined,
+  });
+
+  useEffect(() => {
+    setFields(filters);
+  }, [filters]);
+
+  const setField = <T extends keyof Filters>(key: T, value: Filters[T]) => {
+    setFields((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const filters: Partial<Filters> = {};
-
-    if (size) filters.size = size;
-    if (minPrice) filters.minPrice = minPrice;
-    if (maxPrice) filters.maxPrice = maxPrice;
-    if (color) filters.color = color;
-
-    onApply(filters);
+    applyFilters(fields);
     onDismiss();
   };
 
   const handleClear = () => {
-    setSize("");
-    setMinPrice("");
-    setMaxPrice("");
-    setColor("");
-    onApply({});
+    clearFilters();
     onDismiss();
   };
 
@@ -47,11 +47,11 @@ export const FiltersModal: FC<FiltersModalProps> = ({
         onSubmit={handleSubmit}
         aria-label="filters"
       >
-        <label htmlFor="name">Size</label>
+        <label htmlFor="size">Size</label>
         <select
-          id="name"
-          onChange={({ target }) => setSize(target.value)}
-          value={size}
+          id="size"
+          onChange={({ target }) => setField("size", target.value as Size)}
+          value={fields.size ?? ""}
         >
           <option value="" disabled>
             No preference
@@ -64,22 +64,24 @@ export const FiltersModal: FC<FiltersModalProps> = ({
         <label htmlFor="min-price">Min Price</label>
         <input
           id="min-price"
-          value={minPrice}
-          onChange={({ target }) => setMinPrice(target.value)}
+          value={fields.minPrice ?? ""}
+          type="number"
+          onChange={({ target }) => setField("minPrice", Number(target.value))}
         />
 
         <label htmlFor="max-price">Max Price</label>
         <input
           id="max-price"
-          value={maxPrice}
-          onChange={({ target }) => setMaxPrice(target.value)}
+          value={fields.maxPrice ?? ""}
+          type="number"
+          onChange={({ target }) => setField("maxPrice", Number(target.value))}
         />
 
         <label htmlFor="color">Color</label>
         <select
           id="color"
-          onChange={({ target }) => setColor(target.value)}
-          value={color}
+          onChange={({ target }) => setField("color", target.value as Color)}
+          value={fields.color ?? ""}
         >
           <option value="" disabled>
             No preference

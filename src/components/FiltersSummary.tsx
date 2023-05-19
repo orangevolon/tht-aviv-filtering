@@ -1,9 +1,6 @@
 import { FC } from "react";
 import { Filters } from "../types";
-
-export interface FiltersSummaryProps {
-  filters: Partial<Filters>;
-}
+import { useFilters } from "../contexts/FiltersProvider";
 
 const LABELS: Record<keyof Filters, string> = {
   size: "Size",
@@ -12,10 +9,12 @@ const LABELS: Record<keyof Filters, string> = {
   maxPrice: "Max Price",
 };
 
-export const FiltersSummary: FC<FiltersSummaryProps> = ({ filters }) => {
+export const FiltersSummary: FC = () => {
+  const { filters } = useFilters();
+
   const fields = Object.entries(filters)
-    .filter(([_key, value]) => Boolean(value))
-    .map(([key, value]) => `${LABELS[key]}: ${value}`);
+    .filter(([_key, value]) => value !== undefined)
+    .map(([key, value]) => `${LABELS[key as keyof Filters]}: ${value}`);
 
   if (!fields.length) {
     return <h2>No filters selected!</h2>;

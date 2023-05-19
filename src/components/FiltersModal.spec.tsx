@@ -1,16 +1,20 @@
 import { render, screen, within } from "@testing-library/react";
 import { FiltersModal } from "./FiltersModal";
 import userEvent from "@testing-library/user-event";
+import { FiltersContext, FiltersProvider } from "../contexts/FiltersProvider";
 
 const DEFAULT_PROPS = {
   isVisible: true,
   onDismiss: () => {},
-  onApply: () => {},
 };
 
 describe(`${FiltersModal.name}`, () => {
   it("should render the modal", () => {
-    render(<FiltersModal {...DEFAULT_PROPS} />);
+    render(
+      <FiltersProvider>
+        <FiltersModal {...DEFAULT_PROPS} />
+      </FiltersProvider>
+    );
 
     expect(screen.getByRole("dialog")).toHaveClass(
       "Modal_Container-div--visible"
@@ -24,8 +28,8 @@ describe(`${FiltersModal.name}`, () => {
   });
 
   describe("when form is submitted", () => {
-    it('should call "onApply" with the selected filters', () => {
-      const onApply = jest.fn();
+    it("should update the selected filters", () => {
+      const onFiltersChange = jest.fn();
       const filters = {
         size: "small",
         minPrice: "0",
@@ -33,7 +37,14 @@ describe(`${FiltersModal.name}`, () => {
         color: "red",
       };
 
-      render(<FiltersModal {...DEFAULT_PROPS} onApply={onApply} />);
+      render(
+        <FiltersProvider>
+          <FiltersContext.Consumer>
+            {({ filters }) => onFiltersChange(filters)}
+          </FiltersContext.Consumer>
+          <FiltersModal {...DEFAULT_PROPS} />
+        </FiltersProvider>
+      );
       const form = screen.getByRole("form");
       const sizeInput = within(form).getByLabelText("Size");
       const minPriceInput = within(form).getByLabelText("Min Price");
@@ -47,50 +58,44 @@ describe(`${FiltersModal.name}`, () => {
       userEvent.selectOptions(colorInput, filters.color);
       userEvent.click(submitButton);
 
-      expect(onApply).toHaveBeenCalledWith(filters);
-    });
-
-    it("should call onApply with ONLY the selected filters", () => {
-      const onApply = jest.fn();
-      const filters = {
+      expect(onFiltersChange).toHaveBeenCalledWith({
         size: "small",
-        minPrice: "0",
-      };
-
-      render(<FiltersModal {...DEFAULT_PROPS} onApply={onApply} />);
-      const form = screen.getByRole("form");
-      const sizeInput = within(form).getByLabelText("Size");
-      const minPriceInput = within(form).getByLabelText("Min Price");
-      const submitButton = within(form).getByRole("button", { name: "Apply" });
-
-      userEvent.selectOptions(sizeInput, filters.size);
-      userEvent.type(minPriceInput, filters.minPrice);
-      userEvent.click(submitButton);
-
-      expect(onApply).toHaveBeenCalledWith(
-        expect.not.objectContaining({
-          maxPrice: expect.anything(),
-          color: expect.anything(),
-        })
-      );
+        minPrice: 0,
+        maxPrice: 100,
+        color: "red",
+      });
     });
   });
 
   describe("when form is cleared", () => {
     it('should call "onApply" with an empty object', () => {
-      const onApply = jest.fn();
+      const onFiltersChange = jest.fn();
 
-      render(<FiltersModal {...DEFAULT_PROPS} onApply={onApply} />);
+      render(
+        <FiltersProvider>
+          <FiltersContext.Consumer>
+            {({ filters }) => onFiltersChange(filters)}
+          </FiltersContext.Consumer>
+          <FiltersModal {...DEFAULT_PROPS} />
+        </FiltersProvider>
+      );
       const form = screen.getByRole("form");
       const sizeInput = within(form).getByLabelText("Size");
+      const applyButton = within(form).getByRole("button", {
+        name: "Apply",
+      });
       const clearButton = within(form).getByRole("button", {
         name: "Clear All",
       });
 
+      // 1. Select filter and apply
       userEvent.selectOptions(sizeInput, "small");
+      userEvent.click(applyButton);
+
+      // 2. Clear filters
       userEvent.click(clearButton);
 
-      expect(onApply).toHaveBeenCalledWith({});
+      expect(onFiltersChange).toHaveBeenNthCalledWith(3, {});
     });
   });
 });
