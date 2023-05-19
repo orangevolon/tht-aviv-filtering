@@ -8,3 +8,11 @@ export interface Filters {
   maxPrice?: number;
   color?: Color;
 }
+
+export interface Product {
+  id: number;
+  name: string;
+  size: Size;
+  price: number;
+  color: Color;
+}

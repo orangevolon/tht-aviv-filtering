@@ -11,12 +11,14 @@ export interface FiltersContextType {
   filters: Filters;
   applyFilters: (filters: Filters) => void;
   clearFilters: () => void;
+  removeFilter: (key: keyof Filters) => void;
 }
 
 export const FILTERS_CONTEXT_DEFAULT_VALUE: FiltersContextType = {
   filters: {},
   applyFilters: () => {},
   clearFilters: () => {},
+  removeFilter: () => {},
 };
 
 export const FiltersContext = createContext<FiltersContextType>(
@@ -34,7 +36,14 @@ export const FiltersProvider: FC<PropsWithChildren> = ({ children }) => {
     setFilters({});
   };
 
-  const value = { filters, applyFilters, clearFilters };
+  const removeFilter = (key: keyof Filters) => {
+    setFilters((filters) => ({
+      ...filters,
+      [key]: undefined,
+    }));
+  };
+
+  const value = { filters, applyFilters, clearFilters, removeFilter };
 
   return (
     <FiltersContext.Provider value={value}>{children}</FiltersContext.Provider>
